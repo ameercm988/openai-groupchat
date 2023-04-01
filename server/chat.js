@@ -1,5 +1,5 @@
 const socket = require('socket.io');
-const db = require('./config')
+const db = require('./connection')
 const { Configuration, OpenAIApi } = require('openai');
 
 
@@ -25,7 +25,7 @@ const chatSocket = (server) => {
             const sockets = await io.in(body.room_id).fetchSockets();
             const socketIds = sockets.map(socket => socket.id);
             console.log('socketIds', socketIds);
-            db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id}`,
+             db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id}`,
                 function (error, data, fields) {
                     if (error) {
                         console.log('error', error)
@@ -58,21 +58,23 @@ const chatSocket = (server) => {
             db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id} `, async function (error, data, fields) {
                 console.log("data", data);
                 if (data.length != 0) {
+                    let response;
+
                     if (data[0].status != 0) {
 
                         if (body.message.includes('@chatbot')) {
                             const prompt = body.message.replace('@chatbot', '').trim();
 
-                            const response = await openai.createChatCompletion({
-                                model: "davinci",
-                                prompt: prompt,
-                                maxTokens: 50,
-                                temperature: 0.7,
-                                n: 1,
-                                stop: "\n"
+                             response = await openai.createChatCompletion({
+                                model : "gpt-3.5-turbo",
+                                messages : [{ role: "user", content: prompt }],
+                                "temperature": 0.7
                             });
+console.log('response :>> ', response);
+console.log('responsedata :>> ', response.data.choices[0]);
+                            // socket.emit('message', response.data.choices[0].text);
+                            // socket.emit('message', response.data.choices[0].message.content);
 
-                            socket.emit('message', response.choices[0].text)
                         }
 
                         db.query(`insert into chat_master(room_id,user_id,message ,message_type) values(?,?,?,?)`, [body.room_id, body.user_id, body.message, body.message_type], function (error, chats, fields) {
@@ -94,7 +96,40 @@ const chatSocket = (server) => {
                                     image_url: body.image_url
                                 });
                             }
-                        });
+                        }
+
+
+                        
+                        );
+
+                        if(response){
+
+                            db.query(`insert into chat_master(room_id,user_id,message ,message_type) values(?,?,?,?)`, [body.room_id, 666,  response.data.choices[0].message.content,  response.data.choices[0].message.role], function (error, chats, fields) {
+                                if (error) {
+                                    console.log("error", error);
+                                } else {
+                                    console.log("chats", chats);
+                                    console.log("chat", chats.insertId);
+                                    const dateUTC = new Date()
+                                    var dateIST = new Date(dateUTC.getTime() + 330 * 60000);
+                                    //gets the room user and the message sent
+                                    io.to(body.room_id).emit("message", {
+                                        message_id: chats.insertId,
+                                        user_id: 666, //sender_user_id
+                                        username: body.username,
+                                        message: response.data.choices[0].message.content,
+                                        message_type: response.data.choices[0].message.role,
+                                        created_at: dateIST,
+                                        image_url: body.image_url
+                                    });
+                                }
+                            }
+    
+    
+                            
+                            );
+
+                        }
                     }
                 }
 
