@@ -22,7 +22,10 @@ const PORT = 80 || process.env.PORT;
 // const http = require('http').Server(app);
 
 app.get('/',(req, res)=>{
-    res.json("get request")
+    res.status(200).send({
+        message : `<< group chat ai >>`
+    })
+    // res.json("get request")
 })
 
 app.post('/chatHistory', getChatHistory)

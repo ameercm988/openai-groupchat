@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/d0b86578-997d-459b-8ce6-cc85e9703234/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/group-chat-ai",
+    "appService.deploySubpath": "."
+}
