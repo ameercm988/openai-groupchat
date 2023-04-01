@@ -25,7 +25,7 @@ app.get('/',(req, res)=>{
     res.json("get request")
 })
 
-app.get('/chatHistory', getChatHistory)
+app.post('/chatHistory', getChatHistory)
 
 
 const server = app.listen(PORT, ()=>{
