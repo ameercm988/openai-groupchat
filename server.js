@@ -1,7 +1,7 @@
 const express = require('express');
 const config = require('dotenv').config();
 const cors = require('cors');
-const chatSocket = require('./chat');
+const chatSocket = require('./server/chat');
 
 const app = express();
 
