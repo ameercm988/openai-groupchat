@@ -104,7 +104,7 @@ const chatSocket = (server) => {
 
                         if (response) {
 
-                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?)`, [body.room_id, 666,body.username, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
+                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, 666,body.username, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
                                 if (error) {
                                     console.log("error", error);
                                 } else {
