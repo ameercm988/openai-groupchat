@@ -25,7 +25,7 @@ const chatSocket = (server) => {
             const sockets = await io.in(body.room_id).fetchSockets();
             const socketIds = sockets.map(socket => socket.id);
             console.log('socketIds', socketIds);
-            db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id}`,
+            db.query(`select count(*) as status from room_members where room_id = ${body.room_id}`,
                 function (error, data, fields) {
                     if (error) {
                         console.log('error', error)
@@ -55,7 +55,7 @@ const chatSocket = (server) => {
 
         socket.on("chat", (body) => {
             console.log("chat body", body);
-            db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id} `, async function (error, data, fields) {
+            db.query(`select count(*) as status from room_members where room_id = ${body.room_id}  `, async function (error, data, fields) {
                 console.log("data", data);
                 if (data.length != 0) {
                     let response;
@@ -77,7 +77,7 @@ const chatSocket = (server) => {
 
                         }
 
-                        db.query(`insert into chat_master(room_id,user_id,message ,message_type) values(?,?,?,?)`, [body.room_id, body.user_id, body.message, body.message_type], function (error, chats, fields) {
+                        db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, body.user_id, body.username,body.message, body.message_type], function (error, chats, fields) {
                             if (error) {
                                 console.log("error", error);
                             } else {
@@ -104,7 +104,7 @@ const chatSocket = (server) => {
 
                         if (response) {
 
-                            db.query(`insert into chat_master(room_id,user_id,message ,message_type) values(?,?,?,?)`, [body.room_id, 666, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
+                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?)`, [body.room_id, 666,body.username, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
                                 if (error) {
                                     console.log("error", error);
                                 } else {
