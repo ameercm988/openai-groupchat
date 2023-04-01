@@ -62,21 +62,7 @@ const chatSocket = (server) => {
 
                     if (data[0].status != 0) {
 
-                        if (body.message.includes('@chatbot')) {
-                            const prompt = body.message.replace('@chatbot', '').trim();
-
-                            response = await openai.createChatCompletion({
-                                model: "gpt-3.5-turbo",
-                                messages: [{ role: "user", content: prompt }],
-                                "temperature": 0.7
-                            });
-                            console.log('response :>> ', response);
-                            console.log('responsedata :>> ', response.data.choices[0]);
-                            // socket.emit('message', response.data.choices[0].text);
-                            // socket.emit('message', response.data.choices[0].message.content);
-
-                        }
-
+                        
                         db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, body.user_id, body.username,body.message, body.message_type], function (error, chats, fields) {
                             if (error) {
                                 console.log("error", error);
@@ -102,9 +88,25 @@ const chatSocket = (server) => {
 
                         );
 
+                        if (body.message.includes('@chatbot')) {
+                            const prompt = body.message.replace('@chatbot', '').trim();
+
+                            response = await openai.createChatCompletion({
+                                model: "gpt-3.5-turbo",
+                                messages: [{ role: "user", content: prompt }],
+                                "temperature": 0.7
+                            });
+                            console.log('response :>> ', response);
+                            console.log('responsedata :>> ', response.data.choices[0]);
+                            // socket.emit('message', response.data.choices[0].text);
+                            // socket.emit('message', response.data.choices[0].message.content);
+
+                        }
+
+
                         if (response) {
 
-                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?)`, [body.room_id, 666,body.username, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
+                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, 666,response.data.choices[0].message.role, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
                                 if (error) {
                                     console.log("error", error);
                                 } else {
@@ -116,7 +118,7 @@ const chatSocket = (server) => {
                                     io.to(body.room_id).emit("message", {
                                         message_id: chats.insertId,
                                         user_id: 666, //sender_user_id
-                                        username: body.username,
+                                        username: response.data.choices[0].message.role,
                                         message: response.data.choices[0].message.content,
                                         message_type: response.data.choices[0].message.role,
                                         created_at: dateIST,
