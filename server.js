@@ -17,7 +17,7 @@ const cosrOptions = {
 app.use(cors(cosrOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
-const PORT = 80 || process.env.PORT;
+const PORT = 4444 || process.env.PORT;
 
 // const http = require('http').Server(app);
 
