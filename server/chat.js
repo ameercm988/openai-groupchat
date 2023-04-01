@@ -4,7 +4,7 @@ const { Configuration, OpenAIApi } = require('openai');
 
 
 const configuration = new Configuration({
-    apiKey : process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY
 })
 
 const openai = new OpenAIApi(configuration);
@@ -25,7 +25,7 @@ const chatSocket = (server) => {
             const sockets = await io.in(body.room_id).fetchSockets();
             const socketIds = sockets.map(socket => socket.id);
             console.log('socketIds', socketIds);
-             db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id}`,
+            db.query(`select count(*) as status from room_members where room_id = ${body.room_id} and user_id = ${body.user_id}`,
                 function (error, data, fields) {
                     if (error) {
                         console.log('error', error)
@@ -65,13 +65,13 @@ const chatSocket = (server) => {
                         if (body.message.includes('@chatbot')) {
                             const prompt = body.message.replace('@chatbot', '').trim();
 
-                             response = await openai.createChatCompletion({
-                                model : "gpt-3.5-turbo",
-                                messages : [{ role: "user", content: prompt }],
+                            response = await openai.createChatCompletion({
+                                model: "gpt-3.5-turbo",
+                                messages: [{ role: "user", content: prompt }],
                                 "temperature": 0.7
                             });
-console.log('response :>> ', response);
-console.log('responsedata :>> ', response.data.choices[0]);
+                            console.log('response :>> ', response);
+                            console.log('responsedata :>> ', response.data.choices[0]);
                             // socket.emit('message', response.data.choices[0].text);
                             // socket.emit('message', response.data.choices[0].message.content);
 
@@ -99,12 +99,12 @@ console.log('responsedata :>> ', response.data.choices[0]);
                         }
 
 
-                        
+
                         );
 
-                        if(response){
+                        if (response) {
 
-                            db.query(`insert into chat_master(room_id,user_id,message ,message_type) values(?,?,?,?)`, [body.room_id, 666,  response.data.choices[0].message.content,  response.data.choices[0].message.role], function (error, chats, fields) {
+                            db.query(`insert into chat_master(room_id,user_id,message ,message_type) values(?,?,?,?)`, [body.room_id, 666, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
                                 if (error) {
                                     console.log("error", error);
                                 } else {
@@ -124,9 +124,9 @@ console.log('responsedata :>> ', response.data.choices[0]);
                                     });
                                 }
                             }
-    
-    
-                            
+
+
+
                             );
 
                         }

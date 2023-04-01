@@ -2,7 +2,8 @@ const express = require('express');
 const config = require('dotenv').config();
 const cors = require('cors');
 const chatSocket = require('./server/chat');
-const bodyParser =require('body-parser')
+const bodyParser =require('body-parser');
+const { getChatHistory } = require('./server/api');
 
 
 const app = express();
@@ -23,6 +24,8 @@ const PORT = 80 || process.env.PORT;
 app.get('/',(req, res)=>{
     res.json("get request")
 })
+
+app.get('/chatHistory', getChatHistory)
 
 
 const server = app.listen(PORT, ()=>{
