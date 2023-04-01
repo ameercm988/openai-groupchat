@@ -4,7 +4,7 @@ const getChatHistory = (req, res) => {
 
     const { room_id } = req.body;
 
-    db.query(`select * from chat_master where room_id = ${room_id}`,
+    db.query(`select * from chat_master where room_id = ${room_id} order by id DESC limit 20`,
         function (error, data, fields) {
             if (error) {
                 console.log('error', error)
