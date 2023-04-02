@@ -2,10 +2,10 @@
   "name": "ai-group-chat",
   "version": "1.0.0",
   "description": "chat room with ai bot",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon index"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "ameer",
   "license": "ISC",
