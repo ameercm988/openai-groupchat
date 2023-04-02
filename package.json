@@ -4,8 +4,8 @@
   "description": "chat room with ai bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "author": "ameer",
   "license": "ISC",
