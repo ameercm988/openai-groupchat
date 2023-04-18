@@ -55,15 +55,38 @@ const chatSocket = (server) => {
 
         socket.on("chat", (body) => {
             console.log("chat body", body);
+
             db.query(`select count(*) as status from room_members where room_id = ${body.room_id}  `, async function (error, data, fields) {
-                console.log("data", data);
+
+                const msg = `select * from chat_master cm  WHERE  cm.room_id =${body.room_id}`;
+                const [msg_data] = await db.promise().query(msg);
+                console.log('msg :>> ', msg_data);
+                let conversation = "";
+                let prevUsername = "";
+                for (let i = 0; i < msg_data.length; i++) {
+                    const username = msg_data[i].user_name;
+                    const msg = msg_data[i].message;
+                    const formattedMsg = `"${msg}"`;
+
+                    if (username === prevUsername) {
+                        // add message to existing username
+                        conversation += `, ${formattedMsg}`;
+                    } else {
+                        // add new username and message
+                        conversation += `\n${username}: ${formattedMsg}`;
+                        prevUsername = username;
+                    }
+                }
+
+console.log('conversation :>> ', conversation);          
+      console.log("data", data);
                 if (data.length != 0) {
                     let response;
 
                     if (data[0].status != 0) {
 
-                        
-                        db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, body.user_id, body.username,body.message, body.message_type], function (error, chats, fields) {
+
+                        db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, body.user_id, body.username, body.message, body.message_type], function (error, chats, fields) {
                             if (error) {
                                 console.log("error", error);
                             } else {
@@ -89,13 +112,19 @@ const chatSocket = (server) => {
                         );
 
                         if (body.message.includes('@chatbot')) {
-                            const prompt = body.message.replace('@chatbot', '').trim();
 
-                            response = await openai.createChatCompletion({
-                                model: "gpt-3.5-turbo",
-                                messages: [{ role: "user", content: prompt }],
-                                "temperature": 0.7
-                            });
+
+
+                            // const prompt = body.message.replace('@chatbot', '').trim();
+                            prompt = `greetings for conversation- Hi there! I'm your dopamine, fitness bot. How can I assist you today? Are you looking for information about healthy eating, exercise routines, or other wellness-related topics? Just let me know what you need, and I'll do my best to provide the information you're looking for.
+                            ONly answer to fitness related queriess else say Iam only a fitness bot
+                         ${conversation}
+                            AI:`,
+                                response = await openai.createChatCompletion({
+                                    model: "gpt-3.5-turbo",
+                                    messages: [{ role: "user", content: prompt }],
+                                    "temperature": 0.7
+                                });
                             console.log('response :>> ', response);
                             console.log('responsedata :>> ', response.data.choices[0]);
                             // socket.emit('message', response.data.choices[0].text);
@@ -106,7 +135,7 @@ const chatSocket = (server) => {
 
                         if (response) {
 
-                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, 666,response.data.choices[0].message.role, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
+                            db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, 666, response.data.choices[0].message.role, response.data.choices[0].message.content, response.data.choices[0].message.role], function (error, chats, fields) {
                                 if (error) {
                                     console.log("error", error);
                                 } else {
