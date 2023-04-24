@@ -66,11 +66,13 @@ const chatSocket = (server) => {
                     if (data[0].status != 0) {
 
 
-                        db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, body.user_id, body.username, body.message, body.message_type], function (error, chats, fields) {
-                            if (error) {
-                                console.log("error", error);
-                            } else {
-                                console.log("chats", chats);
+                        try {
+                            const procedure = `insert into chat_master(room_id,user_id,user_name,message ,message_type) values(${body.room_id},${body.user_id},${body.username},${body.message},${body.message_type})`
+
+                        const [chats] = await db.promise().query(procedure)
+                        console.log('chats data>', chats)
+
+                        console.log("chats", chats);
                                 console.log("chat", chats.insertId);
                                 const dateUTC = new Date()
                                 var dateIST = new Date(dateUTC.getTime() + 330 * 60000);
@@ -84,12 +86,35 @@ const chatSocket = (server) => {
                                     created_at: dateIST,
                                     image_url: body.image_url
                                 });
-                            }
+                        } catch (error) {
+                            console.log("error", error);
+
                         }
 
+                        
 
 
-                        );
+                        //  db.query(`insert into chat_master(room_id,user_id,user_name,message ,message_type) values(?,?,?,?,?)`, [body.room_id, body.user_id, body.username, body.message, body.message_type],  function (error, chats, fields) {
+                        //     if (error) {
+                        //         console.log("error", error);
+                        //     } else {
+                        //         console.log("chats", chats);
+                        //         console.log("chat", chats.insertId);
+                        //         const dateUTC = new Date()
+                        //         var dateIST = new Date(dateUTC.getTime() + 330 * 60000);
+                        //         //gets the room user and the message sent
+                        //         io.to(body.room_id).emit("message", {
+                        //             message_id: chats.insertId,
+                        //             user_id: body.user_id, //sender_user_id
+                        //             username: body.username,
+                        //             message: body.message,
+                        //             message_type: body.message_type,
+                        //             created_at: dateIST,
+                        //             image_url: body.image_url
+                        //         });
+                        //     }
+                        // }
+                        // );
 
                         const msg = `select * from chat_master cm  WHERE  cm.room_id =${body.room_id}`;
                 const [msg_data] = await db.promise().query(msg);
