@@ -117,9 +117,8 @@ console.log('conversation :>> ', conversation);
 
                             // const prompt = body.message.replace('@chatbot', '').trim();
                             prompt = `greetings for conversation- Hi there! I'm your dopamine,the fitness bot. How can I assist you today? 
-                            ONly answer to fitness related queriess else say Iam only a fitness bot.
+                            ONly answer to fitness related queriess else say Iam only a fitness bot also limit answer  to max of 30 words.
 
-                            Here are the conversations -
                          ${conversation}
                             AI:`,
                                 response = await openai.createChatCompletion({
