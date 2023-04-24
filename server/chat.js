@@ -144,7 +144,7 @@ console.log('conversation :>> ', conversation);
 
                             // const prompt = body.message.replace('@chatbot', '').trim();
                             prompt = `greetings for conversation- Hi there! I'm your dopamine,the fitness bot. How can I assist you today? 
-                            ONly answer to fitness related queriess else say Iam only a fitness bot also limit answer  to max of 30 words.
+                            Kindly ask questions related to health and wellness. 
 
                          ${conversation}
                             AI:`,
