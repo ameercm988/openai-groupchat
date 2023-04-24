@@ -67,9 +67,9 @@ const chatSocket = (server) => {
 
 
                         try {
-                            const procedure = `insert into chat_master(room_id,user_id,user_name,message ,message_type) values(${body.room_id},${body.user_id},${body.username},${body.message},${body.message_type})`
+                            const procedure = `INSERT INTO chat_master(room_id, user_id, user_name, message, message_type) VALUES (${body.room_id}, ${body.user_id}, '${body.username}', '${body.message}', '${body.message_type}')`;
 
-                        const [chats] = await db.promise().query(procedure)
+const [chats] = await db.promise().query(procedure);
                         console.log('chats data>', chats)
 
                         console.log("chats", chats);
