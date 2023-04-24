@@ -111,13 +111,15 @@ console.log('conversation :>> ', conversation);
 
                         );
 
-                        if (body.message.includes('@chatbot')) {
+                        // if (body.message.includes('@chatbot')) {
 
 
 
                             // const prompt = body.message.replace('@chatbot', '').trim();
-                            prompt = `greetings for conversation- Hi there! I'm your dopamine, fitness bot. How can I assist you today? Are you looking for information about healthy eating, exercise routines, or other wellness-related topics? Just let me know what you need, and I'll do my best to provide the information you're looking for.
-                            ONly answer to fitness related queriess else say Iam only a fitness bot
+                            prompt = `greetings for conversation- Hi there! I'm your dopamine,the fitness bot. How can I assist you today? 
+                            ONly answer to fitness related queriess else say Iam only a fitness bot.
+
+                            Here are the conversations -
                          ${conversation}
                             AI:`,
                                 response = await openai.createChatCompletion({
@@ -130,7 +132,7 @@ console.log('conversation :>> ', conversation);
                             // socket.emit('message', response.data.choices[0].text);
                             // socket.emit('message', response.data.choices[0].message.content);
 
-                        }
+                        // }
 
 
                         if (response) {
