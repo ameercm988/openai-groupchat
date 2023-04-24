@@ -58,27 +58,7 @@ const chatSocket = (server) => {
 
             db.query(`select count(*) as status from room_members where room_id = ${body.room_id}  `, async function (error, data, fields) {
 
-                const msg = `select * from chat_master cm  WHERE  cm.room_id =${body.room_id}`;
-                const [msg_data] = await db.promise().query(msg);
-                console.log('msg :>> ', msg_data);
-                let conversation = "";
-                let prevUsername = "";
-                for (let i = 0; i < msg_data.length; i++) {
-                    const username = msg_data[i].user_name;
-                    const msg = msg_data[i].message;
-                    const formattedMsg = `"${msg}"`;
-
-                    if (username === prevUsername) {
-                        // add message to existing username
-                        conversation += `, ${formattedMsg}`;
-                    } else {
-                        // add new username and message
-                        conversation += `\n${username}: ${formattedMsg}`;
-                        prevUsername = username;
-                    }
-                }
-
-console.log('conversation :>> ', conversation);          
+                        
       console.log("data", data);
                 if (data.length != 0) {
                     let response;
@@ -110,6 +90,28 @@ console.log('conversation :>> ', conversation);
 
 
                         );
+
+                        const msg = `select * from chat_master cm  WHERE  cm.room_id =${body.room_id}`;
+                const [msg_data] = await db.promise().query(msg);
+                console.log('msg :>> ', msg_data);
+                let conversation = "";
+                let prevUsername = "";
+                for (let i = 0; i < msg_data.length; i++) {
+                    const username = msg_data[i].user_name;
+                    const msg = msg_data[i].message;
+                    const formattedMsg = `"${msg}"`;
+
+                    if (username === prevUsername) {
+                        // add message to existing username
+                        conversation += `, ${formattedMsg}`;
+                    } else {
+                        // add new username and message
+                        conversation += `\n${username}: ${formattedMsg}`;
+                        prevUsername = username;
+                    }
+                }
+
+console.log('conversation :>> ', conversation);  
 
                         // if (body.message.includes('@chatbot')) {
 
