@@ -142,7 +142,7 @@ console.log('conversation :>> ', conversation);
 
 
 
-                            const prompt = body.message.replace('@dopamine', '').trim();
+                            let prompt = conversation.replace('@dopamine', '').trim();
                             prompt = `greetings for conversation- Hi there! I'm your dopamine,the fitness bot. How can I assist you today? 
                             Kindly ask questions related to health and wellness. 
 
