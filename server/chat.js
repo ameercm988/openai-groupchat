@@ -138,11 +138,11 @@ const [chats] = await db.promise().query(procedure);
 
 console.log('conversation :>> ', conversation);  
 
-                        // if (body.message.includes('@chatbot')) {
+                        if (body.message.includes('@dopamine')) {
 
 
 
-                            // const prompt = body.message.replace('@chatbot', '').trim();
+                            const prompt = body.message.replace('@dopamine', '').trim();
                             prompt = `greetings for conversation- Hi there! I'm your dopamine,the fitness bot. How can I assist you today? 
                             Kindly ask questions related to health and wellness. 
 
@@ -158,7 +158,7 @@ console.log('conversation :>> ', conversation);
                             // socket.emit('message', response.data.choices[0].text);
                             // socket.emit('message', response.data.choices[0].message.content);
 
-                        // }
+                        }
 
 
                         if (response) {
