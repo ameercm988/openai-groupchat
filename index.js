@@ -3,7 +3,7 @@ const config = require('dotenv').config();
 const cors = require('cors');
 const chatSocket = require('./server/chat');
 const bodyParser =require('body-parser');
-const { getChatHistory } = require('./server/api');
+const { getChatHistory, getChatBot } = require('./server/api');
 
 
 const app = express();
@@ -29,6 +29,7 @@ app.get('/',(req, res)=>{
 })
 
 app.post('/chatHistory', getChatHistory)
+app.post('/chatBot', getChatBot)
 
 
 const server = app.listen(PORT, ()=>{
